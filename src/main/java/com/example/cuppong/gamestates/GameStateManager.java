@@ -1,19 +1,19 @@
 package com.example.cuppong.gamestates;
 
+import com.example.cuppong.Game;
 import com.example.cuppong.util.KeyHandler;
 import com.example.cuppong.util.MouseHandler;
+import javafx.scene.canvas.GraphicsContext;
 
 public class GameStateManager {
 
     private GameState[] states;
 
-    public static final int STATE_MENU = 0;
-    public static final int STATE_PLAY = 1;
-    public static final int STATE_PAUSE = 2;
-    public static final int STATE_WIN = 3;
-    public static final int STATE_LOSE = 4;
+    public static final int STATE_PLAY = 0;
+    public static final int STATE_PAUSE = 1;
 
     public GameStateManager() {
+        states=new GameState[2];
 
     }
 
@@ -39,15 +39,11 @@ public class GameStateManager {
         }
 
         switch (state) {
-            case STATE_MENU:
-                break;
             case STATE_PLAY:
+                states[STATE_PLAY] = new PlayState(this, 10);
                 break;
             case STATE_PAUSE:
-                break;
-            case STATE_WIN:
-                break;
-            case STATE_LOSE:
+                states[STATE_PAUSE] = new PauseState(this);
                 break;
         }
     }
@@ -68,18 +64,18 @@ public class GameStateManager {
         }
     }
 
-    public void input(KeyHandler k, MouseHandler m) {
+    public void input(KeyHandler k) {
         for (int i = 0; i < states.length; i++) {
             if (states[i] != null && !states[i].suspended) {
-                states[i].input(k, m);
+                states[i].input(k);
             }
         }
     }
 
-    public void render() {
+    public void render(GraphicsContext context) {
         for (int i = 0; i < states.length; i++) {
             if (states[i] != null && !states[i].suspended) {
-                states[i].render();
+                states[i].render(context);
             }
         }
     }

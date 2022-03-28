@@ -1,16 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.cuppong.HelloController">
+<VBox fx:id="box" alignment="CENTER" prefHeight="500.0" prefWidth="800.0" spacing="20.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cuppong.controllers.MenuController">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
+   <GridPane prefHeight="430.0" prefWidth="760.0">
+     <columnConstraints>
+         <ColumnConstraints hgrow="SOMETIMES" maxWidth="375.0" minWidth="0.0" prefWidth="248.0" />
+       <ColumnConstraints hgrow="SOMETIMES" maxWidth="517.0" minWidth="10.0" prefWidth="273.0" />
+       <ColumnConstraints hgrow="SOMETIMES" maxWidth="560.0" minWidth="10.0" prefWidth="240.0" />
+     </columnConstraints>
+     <rowConstraints>
+       <RowConstraints maxHeight="94.0" minHeight="10.0" prefHeight="94.0" vgrow="SOMETIMES" />
+       <RowConstraints maxHeight="157.0" minHeight="10.0" prefHeight="112.0" vgrow="SOMETIMES" />
+       <RowConstraints maxHeight="209.0" minHeight="10.0" prefHeight="110.0" vgrow="SOMETIMES" />
+         <RowConstraints maxHeight="209.0" minHeight="10.0" prefHeight="108.0" vgrow="SOMETIMES" />
+     </rowConstraints>
+      <children>
+         <Button fx:id="btnPlay" mnemonicParsing="false" onAction="#onBtnPlayClick" prefHeight="25.0" prefWidth="274.0" text="Play" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         <Button fx:id="btnHowToPlay" mnemonicParsing="false" onAction="#onBtnHowToPlayClick" prefHeight="25.0" prefWidth="310.0" text="How to play" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         <Button fx:id="btnExit" mnemonicParsing="false" onAction="#onBtnExitClick" prefHeight="25.0" prefWidth="283.0" text="Exit" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      </children>
+   </GridPane>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
+    <Label fx:id="welcomeText" />
 </VBox>
