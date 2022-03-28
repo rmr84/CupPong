@@ -22,7 +22,7 @@ public class Ball extends Sprite {
     private double sizeMult = 1;
 
     public Ball() {
-        super("images/ball.png");
+        super("images/sandro.png");
     }
 
     public void launch(double x, double z) {
