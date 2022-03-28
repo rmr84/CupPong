@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cuppong.controllers.LobbyController">
+   <children>
+      <GridPane prefHeight="600.0" prefWidth="943.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="444.0" minWidth="10.0" prefWidth="89.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="830.0" minWidth="10.0" prefWidth="115.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="830.0" minWidth="0.0" prefWidth="62.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="830.0" minWidth="10.0" prefWidth="97.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="830.0" minWidth="10.0" prefWidth="126.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="830.0" minWidth="0.0" prefWidth="177.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="830.0" minWidth="10.0" prefWidth="130.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="830.0" minWidth="10.0" prefWidth="130.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="251.0" minHeight="0.0" prefHeight="27.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="408.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="350.0" minHeight="8.0" prefHeight="32.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="381.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="321.0" minHeight="10.0" prefHeight="307.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="173.0" minHeight="10.0" prefHeight="173.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Create Match">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label text="Status:" GridPane.rowIndex="2" />
+            <Label text="Join Key:" GridPane.rowIndex="3" />
+            <Button fx:id="btnCreateMatch" mnemonicParsing="false" onAction="#btnCreateMatch_Click" prefHeight="25.0" prefWidth="92.0" text="Create" GridPane.rowIndex="1" />
+            <Label fx:id="labelStatus" text="Not Connected" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="textFieldJoinKey" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Join Match" GridPane.columnIndex="3">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label text="Join Key:" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <Button fx:id="btnJoinMatch" mnemonicParsing="false" onAction="#btnJoinMatch_Click" prefHeight="25.0" prefWidth="98.0" text="Join" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+            <TextField fx:id="textFieldToJoin" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+         </children>
+      </GridPane>
+   </children>
+</VBox>

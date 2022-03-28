@@ -2,6 +2,7 @@ package com.example.cuppong.gamestates;
 
 import com.example.cuppong.util.KeyHandler;
 import com.example.cuppong.util.MouseHandler;
+import javafx.scene.canvas.GraphicsContext;
 
 public abstract class GameState {
     protected GameStateManager manager;
@@ -12,6 +13,6 @@ public abstract class GameState {
     }
 
     public abstract void update();
-    public abstract void input(KeyHandler k, MouseHandler m);
-    public abstract void render(); //figure out what javafx equivalent to Graphics2D is
+    public abstract void input(KeyHandler k);
+    public abstract void render(GraphicsContext context);
 }
