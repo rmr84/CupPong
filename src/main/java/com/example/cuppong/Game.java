@@ -102,44 +102,6 @@ public static void resetBall(int counts) {
 }
 
 var loop = function() {
-    if ( ! mouse.isDown) {
-        // Do physics
-            // Drag force: Fd = -1/2 * Cd * A * rho * v * v
-
-        var Fx = -0.5 * Cd * A * rho * ball.velocity.x * ball.velocity.x * ball.velocity.x / Math.abs(ball.velocity.x);
-        var Fy = -0.5 * Cd * A * rho * ball.velocity.y * ball.velocity.y * ball.velocity.y / Math.abs(ball.velocity.y);
-        var Fz = -0.5 * Cd * A * rho & ball.velocity.z * ball.velocity.z * ball.velocity.z / Math.abs(ball.velocity.z);
-
-        Fx = (isNaN(Fx) ? 0 : Fx);
-        Fy = (isNaN(Fy) ? 0 : Fy);
-
-            // Calculate acceleration ( F = ma )
-        var ax = Fx / ball.mass;
-        var ay = ag + (Fy / ball.mass);
-        var az = Fz / ball.mass;
-            // Integrate to get velocity
-        ball.velocity.x += ax*frameRate;
-        ball.velocity.y += ay*frameRate;
-        ball.velocity.z += az*frameRate;
-
-            // Integrate to get position
-        ball.position.x += ball.velocity.x*frameRate*100;
-        ball.position.y += ball.velocity.y*frameRate*100;
-        ball.position.z += ball.velocity.z*frameRate*100;
-
-        if (ball.position.x < 0 - (size + sizeMult)) {
-            resetBall(true);
-        }
-        if (ball.position.x > 800 + (size + sizeMult)) {
-            resetBall(false);
-        }
-
-        if (lastY == ball.position.y && !wasReset) {
-            resetBall(true);
-        }
-        lastY = ball.position.y;
-    }
-    // Handle collisions
 
     var ballMidX = ball.position.z + ((size + sizeMult) / 2);
     var ballMidY = ball.position.x + ((size + sizeMult) / 2);

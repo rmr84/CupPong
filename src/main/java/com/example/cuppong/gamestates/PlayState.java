@@ -33,8 +33,11 @@ public class PlayState extends GameState {
 
     public void update() {
 
-        ball.getPos().setX((int)MouseHandler.getInstance().getX());
-        ball.getPos().setY((int)MouseHandler.getInstance().getY());
+        //ball.getPos().setX((int)MouseHandler.getInstance().getX());
+        //ball.getPos().setY((int)MouseHandler.getInstance().getY());
+
+
+        ball.update();
     }
 
     public void input(KeyHandler k) {

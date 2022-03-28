@@ -20,6 +20,8 @@ public class Vector3F extends Vector2F {
         _z+=dz;
     }
 
+    public void mulZ(float dz) { _z*=dz; }
+
     public void set(Vector3F v) {
         _x = v.getX();
         _y = v.getY();

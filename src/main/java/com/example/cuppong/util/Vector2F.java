@@ -33,6 +33,10 @@ public class Vector2F {
         _y+=dy;
     }
 
+    public void mulX(float dx) { _x*=dx; }
+
+    public void mulY(float dy) { _y*=dy; }
+
     public void set(Vector2F v) {
         _x=v.getX();
         _y=v.getY();
