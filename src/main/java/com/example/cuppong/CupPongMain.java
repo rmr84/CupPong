@@ -1,11 +1,12 @@
 package com.example.cuppong;
 
-import com.example.cuppong.gamestates.GameStateManager;
+
 import com.example.cuppong.util.GameStage;
 import com.example.cuppong.util.StageManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -32,9 +33,12 @@ public class CupPongMain extends Application {
     }
 
     public Stage loadStage(String filename, String title, int w, int h) throws IOException {
+
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(CupPongMain.class.getResource(filename));
+
         Scene scene = new Scene(fxmlLoader.load(), w,h);
+
         stage.setTitle(title);
         stage.setResizable(false);
         stage.setScene(scene);
