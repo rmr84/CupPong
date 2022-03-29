@@ -9,12 +9,14 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
+
 
 public class HowToPlayController {
 
+
     @FXML
     Label top;
+
     @FXML
     Label a;
     @FXML
@@ -29,7 +31,6 @@ public class HowToPlayController {
     Label f;
     @FXML
     Label g;
-
 
 
     @FXML
@@ -73,7 +74,6 @@ public class HowToPlayController {
     public void onBackClicked(ActionEvent actionEvent) {
         StageManager.getInstance().showhide(StageManager.MAINMENU, StageManager.HOWTOPLAY);
     }
-
     }
 
 
