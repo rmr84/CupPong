@@ -20,6 +20,8 @@ public class Vector3F extends Vector2F {
         _z+=dz;
     }
 
+    public void mulZ(float dz) { _z*=dz; }
+
     public void set(Vector3F v) {
         _x = v.getX();
         _y = v.getY();
@@ -30,5 +32,10 @@ public class Vector3F extends Vector2F {
         _x=x;
         _y=y;
         _z=z;
+    }
+
+    @Override
+    public String toString() {
+        return "POS: (" + _x + ", " + _y + ", " + _z + ")";
     }
 }
