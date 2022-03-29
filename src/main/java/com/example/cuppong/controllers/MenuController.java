@@ -16,7 +16,7 @@ public class MenuController {
         BackgroundImage myBI= new BackgroundImage(new Image(CupPongMain.class.getResourceAsStream("images/background.jpg")),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT);
-//then you set to your node
+
         box.setBackground(new Background(myBI));
     }
 
@@ -27,6 +27,7 @@ public class MenuController {
 
     @FXML
     public void onBtnHowToPlayClick(ActionEvent actionEvent) {
+        StageManager.getInstance().showhide(StageManager.HOWTOPLAY, StageManager.MAINMENU);
 
     }
 
