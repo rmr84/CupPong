@@ -21,7 +21,7 @@ public class CupPongMain extends Application {
         Stage playStage = new GameStage().create();
         StageManager.getInstance().add(playStage);
 
-        //StageManager.getInstance().add(loadStage("play-view.fxml", "Cup Pong", 1280, 720));
+        StageManager.getInstance().add(loadStage("howtoplay-view.fxml", "Cup Pong", 1280, 720));
 
 
         StageManager.getInstance().add(loadStage("result-view.fxml", "Results", 500, 500));

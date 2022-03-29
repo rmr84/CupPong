@@ -36,7 +36,7 @@ public class MenuController {
 
     @FXML
     public void onBtnHowToPlayClick(ActionEvent actionEvent) {
-
+        StageManager.getInstance().showhide(StageManager.HOWTOPLAY, StageManager.MAINMENU);
     }
 
     @FXML
