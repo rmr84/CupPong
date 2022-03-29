@@ -1,5 +1,7 @@
 package com.example.cuppong.controllers;
 
+import com.example.cuppong.objects.Cup;
+import com.example.cuppong.util.GV;
 import com.example.cuppong.util.StageManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,6 +11,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 public class LobbyController {
+
+    Cup cup = new Cup();
+
 
     private boolean creating=false;
 
@@ -31,6 +36,8 @@ public class LobbyController {
     void btnCreateMatch_Click(ActionEvent event) {
         creating=!creating;
         if(creating) {
+            cup.getPos().set(400, 700, 400);
+            GV.getInstance().addCup(cup);
             btnJoinMatch.setDisable(true);
             int port = 7000;
             textFieldJoinKey.setText(String.valueOf(port));

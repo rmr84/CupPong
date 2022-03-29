@@ -32,6 +32,9 @@ public class GV { //gamevars
         }
         return result;
     }
+    public void addCup(Cup cup) {
+        _cups.add(cup);
+    }
 
     public boolean isMyTurn() {
         return _myturn;

@@ -5,14 +5,18 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class Cup extends Sprite {
 
-    private final int DEFAULT_WIDTH = 10;
-    private final int DEFAULT_HEIGHT=10;
+    private final int DEFAULT_WIDTH = 200;
+    private final int DEFAULT_HEIGHT= 200;
 
-    private Shadow shadow = new Shadow(this);
+    private Shadow shadow;
+
 
     public Cup() {
-        super("images/cupshadow.png");
+        super("images/cup.png");
         set_defaultsize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        _width = DEFAULT_WIDTH;
+        _height = DEFAULT_HEIGHT;
+        shadow = new Shadow(this, pos.getZ(), pos.getX());
     }
 
     public void update() {
@@ -21,7 +25,8 @@ public class Cup extends Sprite {
     }
 
     public void render(GraphicsContext context) {
-        shadow.render(context);
 
+        shadow.render(context);
+        context.drawImage(_image, pos.getZ(), pos.getX(), _width, _height);
     }
 }

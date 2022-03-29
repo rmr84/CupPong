@@ -28,7 +28,7 @@ public class Ball extends Sprite {
     private Shadow shadow;
 
     public Ball() {
-        super("images/ball.png");
+        super("images/sandro.png");
         pos.set(400, 300, 400);
         vel=new Vector3F(0,0,0);
         vel.setY(3);

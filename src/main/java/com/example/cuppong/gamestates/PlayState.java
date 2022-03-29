@@ -3,6 +3,7 @@ package com.example.cuppong.gamestates;
 import com.example.cuppong.objects.Ball;
 import com.example.cuppong.objects.Cup;
 import com.example.cuppong.objects.Table;
+import com.example.cuppong.util.GV;
 import com.example.cuppong.util.KeyHandler;
 import com.example.cuppong.util.MouseHandler;
 import java.util.ArrayList;
@@ -28,6 +29,9 @@ public class PlayState extends GameState {
 
 
         ball.update();
+        for (Cup c : GV.getInstance().cups()) {
+            c.update();
+        }
     }
 
     public void input(KeyHandler k) {
@@ -37,5 +41,8 @@ public class PlayState extends GameState {
     public void render(GraphicsContext context) {
         table.render(context);
         ball.render(context);
+        for (Cup c : GV.getInstance().cups()) {
+            c.render(context);
+        }
     }
 }
