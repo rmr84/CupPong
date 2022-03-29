@@ -14,23 +14,13 @@ public class PlayState extends GameState {
     private final int height = 720;
 
     private Ball ball;
-    private ArrayList<Cup> cups;
     private Table table;
 
     public PlayState(GameStateManager manager, int cupsLength) {
         super(manager);
-        initializeCups(cupsLength);
         ball = new Ball();
         table=new Table();
     }
-
-    private void initializeCups(int cupsLength) {
-        cups = new ArrayList<>(cupsLength);
-        cups.forEach(c -> {
-            c = new Cup();
-        });
-    }
-
     public void update() {
 
         //ball.getPos().setX((int)MouseHandler.getInstance().getX());

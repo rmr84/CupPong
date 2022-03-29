@@ -1,84 +1,105 @@
 package com.example.cuppong.objects;
 
-import com.example.cuppong.CupPongMain;
+import com.example.cuppong.objects.shadows.Shadow;
 import com.example.cuppong.util.GV;
+import com.example.cuppong.util.MouseHandler;
 import com.example.cuppong.util.Vector2F;
 import com.example.cuppong.util.Vector3F;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 
 public class Ball extends Sprite {
 
-    private double size = 64;
+    private final int DEFAULT_SIZE = 20;
+
     private boolean mobile=false;
 
-    private final double Cd = .47;
-    private final double rho = 1.22;
-    private final double radius = 15;
+    private final float Cd = .47f;
+    private final float rho = 1.22f;
+    private final float radius = 15f;
     private final double A = Math.PI * radius * radius / (10000);
-    private final double ag = 9.81;
+    private final float ag = 9.81f;
     private Vector2F mid = new Vector2F(0, 0);
-    private final Vector3F vel = new Vector3F(10,0,0);
-    private final double mass = 0.1;
-    private final double restitution = -0.7;
+    private final Vector3F vel;
+    private final float mass = 0.1f;
+    private final float restitution = -0.7f;
     private double sizeMult = 1;
-    private double lastY = 0;
+    private float lastY = 0;
+
+    private Shadow shadow;
 
     public Ball() {
         super("images/ball.png");
         pos.set(400, 300, 400);
+        vel=new Vector3F(0,0,0);
+        vel.setY(3);
+        mobile=true;
+        _width = DEFAULT_SIZE;
+        _height=DEFAULT_SIZE;
+        shadow = new Shadow(this, pos.getZ(), pos.getX());
+        set_defaultsize(DEFAULT_SIZE, DEFAULT_SIZE);
     }
 
 
 
     public void launch(double x, double z) {
-        pos.set((float)x, 300, (float)z);
-        vel.set(0,0,0);
+        //pos.set((float)x, 300, (float)z);
+        //vel.set(0,0,0);
     }
 
     public void update() {
-        if (mobile) {
+        _width=(int)(DEFAULT_SIZE+sizeMult);
+        _height=(int)(DEFAULT_SIZE+sizeMult);
+        if (!MouseHandler.getInstance().mouseDown()) {
+            GV.getInstance().setThrowing(false);
             double Fx = -0.5 * Cd * A * rho * vel.getX() * vel.getX() * vel.getX() / Math.abs(vel.getX());
             double Fy = -0.5 * Cd * A * rho * vel.getY() * vel.getY() * vel.getY() / Math.abs(vel.getY());
             double Fz = -0.5 * Cd * A * rho * vel.getZ() * vel.getZ() * vel.getZ() / Math.abs(vel.getZ());
 
+            //System.out.println("POS: ["+pos.getX()+","+pos.getY()+","+pos.getZ()+"]");
+
             Fx = Double.isNaN(Fx) ? 0 : Fx;
             Fy = Double.isNaN(Fy) ? 0 : Fy;
+            Fz = Double.isNaN(Fz) ? 0 : Fz;
 
             double ax = Fx / mass;
             double ay = ag + (Fy / mass);
             double az = Fz / mass;
 
-            double rate = 1/80;
+            float rate = 1f/80f;
             vel.addX((float)(ax * rate));
             vel.addY((float)(ay * rate));
             vel.addZ((float)(az * rate));
-            pos.addX((float)(vel.getX()*rate*100));
-            pos.addY((float)(vel.getY()*rate*100));
-            pos.addZ((float)(vel.getZ()*rate*100));
 
-            if (pos.getX() < 0 - (size+sizeMult)) {
+            pos.addX((float)(vel.getX()*rate*100f));
+            pos.addY((float)(vel.getY()*rate*100f));
+            pos.addZ((float)(vel.getZ()*rate*100f));
+
+
+            if (pos.getX() < 0 - _width) {
                 reset(false);
             }
 
-            if (pos.getX() > 1000 + (size+sizeMult)) {
+            if (pos.getX() > 1000 + _width) {
                 reset(true);
             }
 
-            if (lastY == pos.getY() && !GV.getInstance().wasReset()) {
+            if (lastY==pos.getY() && !GV.getInstance().wasReset()) {
                 reset(false);
             }
             lastY = pos.getY();
+        } else {
+            GV.getInstance().setThrowing(true);
         }
 
-        mid.setX((float)(pos.getZ() + (size + sizeMult) / 2));
-        mid.setY((float)(pos.getX() + (size + sizeMult) / 2));
+        mid.setX((float)(pos.getZ() + _width / 2));
+        mid.setY((float)(pos.getX() + _height / 2));
 
         if(GV.getInstance().isMyTurn()) {
             if (pos.getY() > GV.getInstance().height() - radius) {
-                vel.mulY((float) restitution);
+                vel.mulY(restitution);
                 pos.setY((float) (GV.getInstance().height() - radius));
-                System.out.println("Y: " + pos.getY());
+
+                //System.out.println(pos.toString());
 
                 /*
                 for (let i = 0; i < cups.length; i++) {
@@ -142,10 +163,12 @@ public class Ball extends Sprite {
             ctx.fillText("it is not your turn", 400, 400);
         }
         ctx.restore();*/
+        shadow.update();
     }
 
     public void render(GraphicsContext context) {
-        context.drawImage(_image, pos.getZ(), pos.getX(), size + sizeMult, size + sizeMult);
+        shadow.render(context);
+        context.drawImage(_image, pos.getZ(), pos.getX(), _width, _height);
     }
 
     public boolean isMobile() {
@@ -163,8 +186,9 @@ public class Ball extends Sprite {
 
         }
 
-        vel.set(0,0,0);
-        pos.set(400,(float)(400-(size+sizeMult)),300);
+        //vel.set(0,0,0);
+        pos.set(400,(float)(400-_height),300);
+        shadow = new Shadow(this, pos.getZ(), pos.getX());
         GV.getInstance().setReset(true);
     }
 }

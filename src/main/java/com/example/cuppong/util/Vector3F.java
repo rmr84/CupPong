@@ -33,4 +33,9 @@ public class Vector3F extends Vector2F {
         _y=y;
         _z=z;
     }
+
+    @Override
+    public String toString() {
+        return "POS: (" + _x + ", " + _y + ", " + _z + ")";
+    }
 }

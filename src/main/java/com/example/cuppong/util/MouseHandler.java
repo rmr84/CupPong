@@ -6,6 +6,7 @@ public class MouseHandler {
     private static Object lockobj = new Object();
     private double _x;
     private double _y;
+    private boolean _mousedown = false;
 
     private MouseHandler() {
         _x=0;
@@ -36,5 +37,13 @@ public class MouseHandler {
 
     public double getY() {
         return _y;
+    }
+
+    public boolean mouseDown() {
+        return _mousedown;
+    }
+
+    public void setMouseDown(boolean value) {
+        _mousedown=value;
     }
 }

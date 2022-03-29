@@ -40,15 +40,4 @@ public class CupPongMain extends Application {
         stage.setScene(scene);
         return stage;
     }
-
-    public Stage loadStage(String filename, String title, int w, int h, String styleSheetPath) throws IOException {
-        Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(CupPongMain.class.getResource(filename));
-        Scene scene = new Scene(fxmlLoader.load(), w,h);
-        scene.getStylesheets().add(styleSheetPath);
-        stage.setTitle(title);
-        stage.setResizable(false);
-        stage.setScene(scene);
-        return stage;
-    }
 }

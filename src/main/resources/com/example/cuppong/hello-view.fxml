@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" prefHeight="500.0" prefWidth="800.0" spacing="20.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cuppong.controllers.MenuController">
+<VBox fx:id="box" alignment="CENTER" prefHeight="500.0" prefWidth="800.0" spacing="20.0" stylesheets="@styles/menu.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cuppong.controllers.MenuController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -21,11 +21,11 @@
          <RowConstraints maxHeight="209.0" minHeight="10.0" prefHeight="108.0" vgrow="SOMETIMES" />
      </rowConstraints>
       <children>
-         <Button fx:id="btnPlay" mnemonicParsing="false" onAction="#onBtnPlayClick" prefHeight="25.0" prefWidth="274.0" text="Play" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-         <Button fx:id="btnHowToPlay" mnemonicParsing="false" onAction="#onBtnHowToPlayClick" prefHeight="25.0" prefWidth="310.0" text="How to play" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-         <Button fx:id="btnExit" mnemonicParsing="false" onAction="#onBtnExitClick" prefHeight="25.0" prefWidth="283.0" text="Exit" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+         <Button fx:id="btnPlay" mnemonicParsing="false" onAction="#onBtnPlayClick" prefHeight="25.0" prefWidth="274.0" styleClass="menubtn" text="Play" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         <Button fx:id="btnHowToPlay" mnemonicParsing="false" onAction="#onBtnHowToPlayClick" prefHeight="25.0" prefWidth="310.0" styleClass="menubtn" text="How to play" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         <Button fx:id="btnExit" mnemonicParsing="false" onAction="#onBtnExitClick" prefHeight="25.0" prefWidth="283.0" styleClass="menubtn" text="Exit" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      
+          <Label fx:id="welcomeText" alignment="CENTER" prefHeight="17.0" prefWidth="286.0" styleClass="titlelabel" text="Cup Pong" GridPane.columnIndex="1" />
       </children>
    </GridPane>
-
-    <Label fx:id="welcomeText" />
 </VBox>

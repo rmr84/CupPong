@@ -29,7 +29,7 @@ public class Vector2F {
         _x+=dx;
     }
 
-    public void  addY(float dy) {
+    public void addY(float dy) {
         _y+=dy;
     }
 
@@ -45,5 +45,10 @@ public class Vector2F {
     public void set(float x, float y) {
         _x=x;
         _y=y;
+    }
+
+    @Override
+    public String toString() {
+        return "POS: (" + _x + ", " + _y + ")";
     }
 }
