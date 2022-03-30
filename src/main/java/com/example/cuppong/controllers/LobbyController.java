@@ -13,7 +13,7 @@ import javafx.scene.control.TextField;
 public class LobbyController {
 
     Cup cup = new Cup();
-
+    Cup cup2 = new Cup();
 
     private boolean creating=false;
 
@@ -36,8 +36,10 @@ public class LobbyController {
     void btnCreateMatch_Click(ActionEvent event) {
         creating=!creating;
         if(creating) {
-            cup.getPos().set(400, 700, 400);
+            cup.getPos().set(400, 0, 400);
+            cup2.getPos().set(-10, 0, 400);
             GV.getInstance().addCup(cup);
+            GV.getInstance().addCup(cup2);
             btnJoinMatch.setDisable(true);
             int port = 7000;
             textFieldJoinKey.setText(String.valueOf(port));
