@@ -75,7 +75,7 @@ public class LobbyController {
             }
 
             btnJoinMatch.setDisable(true);
-            int port = 7000;
+            int port = 4444;
             textFieldJoinKey.setText(String.valueOf(port));
             labelStatus.setText("Connected");
             btnCreateMatch.setText("Cancel");

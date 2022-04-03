@@ -1,13 +1,15 @@
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Message {
+public class Message implements Serializable {
     private String type;
     private HashMap<String, String> params = new HashMap<>();
 
     public Message(String input) {
         String[] split = input.split(",");
         type = split[0];
-        for (String s : split) {
+        for (int i = 1; i < split.length; i++) {
+            String s = split[i];
             String key = s.split(":")[0];
             String value = s.split(":")[1];
             params.put(key, value);

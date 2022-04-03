@@ -1,17 +1,14 @@
 package com.example.cuppong.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.*;
 
 public class ClientHandler {
     private static volatile ClientHandler instance;
     private static Object lockobj = new Object();
     private static volatile Socket client = null;
-    private PrintWriter out;
-    private BufferedReader in;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
 
     private ClientHandler()
     {
@@ -32,54 +29,29 @@ public class ClientHandler {
     }
 
     public void connect(int port) {
-        if (client == null) {
-            try {
-                client = new Socket("127.0.0.1", port);
-                out = new PrintWriter(client.getOutputStream(), true);
-                in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        try {
+            InetAddress addr = InetAddress.getByName("localhost");
+            client = new Socket(addr, port);
+            out = new ObjectOutputStream(client.getOutputStream());
+            out.flush();
+            in = new ObjectInputStream(client.getInputStream());
 
-                Runnable r = () -> {
-                    try {
-                        while (client.isConnected()) {
-                            String inputLine = in.readLine();
-                            if (in.readLine() != null) {
-                                Message m = new Message(inputLine);
+            Client c = new Client(in);
+            c.start();
 
-                                switch (m.getType()) {
-                                    case "reg":
-                                        System.out.println("Player was registered");
-                                        break;
-                                }
+            sendMessage("reg,cups:6");
 
-                                System.out.println("Got a mesage");
-                                // out.println(inputLine);
-                            }
-
-                            in.close();
-                            out.close();
-                        }
-                    } catch(Exception e){
-                        e.printStackTrace();
-                    }
-                };
-                Thread clientThread = new Thread(r);
-                clientThread.start();
-
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (client != null && client.isConnected()) {
-                    System.out.println("Connected successfully.");
-                    out.write("reg,cups:6");
-                }
-            }
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
         }
     }
 
     public void disconnect() {
-        if (client != null && client.isConnected()) {
+        if (client.isConnected()) {
             try {
                 client.close();
                 System.out.println("Disconnected");
@@ -89,11 +61,14 @@ public class ClientHandler {
         }
     }
 
-    public void sendMessage() {
-
-    }
-
-    private void receiveMessage() {
-
+    public void sendMessage(String input) {
+        try {
+            //Message m = new Message(input);
+            out.writeObject(input);
+            out.flush();
+        } catch (IOException e) {
+            System.out.println("Error when sending message.\n");
+            e.printStackTrace();
+        }
     }
 }

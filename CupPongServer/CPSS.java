@@ -34,7 +34,7 @@ public class CPSS {
                         synchronized (this) {
                             users[numUsers] = newSocket;
                             ObjectInputStream in = new ObjectInputStream(newSocket.getInputStream());
-                            Message reg = (Message) in.readObject();
+                            // Message reg = (Message) in.readObject();
                             sendMessage("A new user has connected");
                             threads[numUsers] = new UserThread(newSocket, numUsers, in);
                             threads[numUsers].start();
@@ -109,11 +109,18 @@ public class CPSS {
         public void run() {
             boolean alive = true;
             while (alive) {
-                Message newMsg = null;
+                String str = null;
                 try {
-                    newMsg = (Message) myInputStream.readObject();
+                    str = (String) myInputStream.readObject();
                     synchronized (this) {
                         CPSS.this.sendMessage("hi");
+                        Message m = new Message(str);
+                        switch (m.getType()) {
+                            case "reg":
+                                // CPSS.this.sendMessage("got reg");
+                                System.out.println("got reg");
+                                break;
+                        }
                     }
                 } catch (ClassNotFoundException e) {
                     System.out.println("Error receiving message....shutting down");

@@ -1,16 +1,18 @@
 package com.example.cuppong.util;
 
-import java.io.BufferedReader;
+
+import java.io.ObjectInputStream;
 
 public class Client extends Thread {
-    private BufferedReader in;
+    private ObjectInputStream in;
 
-    public Client(BufferedReader in) {
+    public Client(ObjectInputStream in) {
         this.in=in;
     }
 
     @Override
-    public void run() {
+    public void run()
+    {
 
     }
 }
