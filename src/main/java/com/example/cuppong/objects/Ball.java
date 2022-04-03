@@ -9,7 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class Ball extends Sprite {
 
-    private final int DEFAULT_SIZE = 20;
+    private final int DEFAULT_SIZE = 30;
 
     private boolean mobile=false;
 
@@ -28,10 +28,10 @@ public class Ball extends Sprite {
     private Shadow shadow;
 
     public Ball() {
-        super("images/sandro.png");
+        super("images/sandro2.png");
         pos.set(400, 300, 400);
         vel=new Vector3F(0,0,0);
-        vel.setY(3);
+        vel.setY(6);
         mobile=true;
         _width = DEFAULT_SIZE;
         _height=DEFAULT_SIZE;
@@ -188,6 +188,8 @@ public class Ball extends Sprite {
 
         //vel.set(0,0,0);
         pos.set(400,(float)(400-_height),300);
+
+        vel.setY(6);
         shadow = new Shadow(this, pos.getZ(), pos.getX());
         GV.getInstance().setReset(true);
     }

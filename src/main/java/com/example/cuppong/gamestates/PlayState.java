@@ -28,10 +28,10 @@ public class PlayState extends GameState {
         //ball.getPos().setY((int)MouseHandler.getInstance().getY());
 
 
-        ball.update();
         for (Cup c : GV.getInstance().cups()) {
             c.update();
         }
+        ball.update();
     }
 
     public void input(KeyHandler k) {
@@ -40,9 +40,9 @@ public class PlayState extends GameState {
 
     public void render(GraphicsContext context) {
         table.render(context);
-        ball.render(context);
         for (Cup c : GV.getInstance().cups()) {
             c.render(context);
         }
+        ball.render(context);
     }
 }

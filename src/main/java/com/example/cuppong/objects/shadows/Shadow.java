@@ -63,7 +63,7 @@ public class Shadow {
         _height = newHeight();
         _pos.set(newPos());
 
-        System.out.println("W: " + _width + ", H: " + _height + ", POS: " + _pos.toString());
+        //System.out.println("W: " + _width + ", H: " + _height + ", POS: " + _pos.toString());
     }
 
     public void render(GraphicsContext context){
@@ -86,7 +86,7 @@ public class Shadow {
 
     private Vector2F newPos() {
         double margin = ((double)_parent.getWidth() - (double)_parent.get_default_width()) / 2d;
-        double calcY = (yBase + (WINDOWH - _parent.getPos().getY()))+5;
+        double calcY = ((yBase + (WINDOWH - _parent.getPos().getY()))+_parent.getHeight()) - ((double)_parent.getHeight()/2.8);
         return new Vector2F((float)(xBase + margin), (float)calcY);
     }
 }

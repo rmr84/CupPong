@@ -12,7 +12,7 @@ public class GV { //gamevars
     private boolean _throwing = false;
     private boolean _wasreset = true;
     private final int _width = 1000;
-    private final int _height = 720;
+    private final int _height = 725;
     private ArrayList<Cup> _cups = new ArrayList<>();
 
     private boolean _gamestarted = false;

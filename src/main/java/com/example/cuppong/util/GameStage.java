@@ -8,10 +8,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
 
 public class GameStage {
     public GameStage() {
@@ -25,7 +22,7 @@ public class GameStage {
         scene.setFill(Color.web("#121212"));
         stage.setScene(scene);
 
-        Canvas canvas = new Canvas(1000,700);
+        Canvas canvas = new Canvas(1000,850);
         root.getChildren().add(canvas);
 
         canvas.setOnMouseMoved(mouseEvent -> {
