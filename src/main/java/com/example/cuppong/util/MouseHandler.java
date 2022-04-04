@@ -8,6 +8,9 @@ public class MouseHandler {
     private double _y;
     private boolean _mousedown = false;
 
+    private double startX;
+    private double startY;
+
     private MouseHandler() {
         _x=0;
         _y=0;
@@ -46,4 +49,12 @@ public class MouseHandler {
     public void setMouseDown(boolean value) {
         _mousedown=value;
     }
+
+    public void setStartX() { startX=_x; }
+
+    public void setStartY() { startY=_y; }
+
+    public double getStartX() { return startX; }
+
+    public double getStartY() { return startY; }
 }

@@ -27,11 +27,12 @@ public class PlayState extends GameState {
         //ball.getPos().setX((int)MouseHandler.getInstance().getX());
         //ball.getPos().setY((int)MouseHandler.getInstance().getY());
 
-
-        for (Cup c : GV.getInstance().cups()) {
-            c.update();
+        if (GV.getInstance().gameStarted()||true) {
+            for (Cup c : GV.getInstance().cups()) {
+                c.update();
+            }
+            ball.update();
         }
-        ball.update();
     }
 
     public void input(KeyHandler k) {
@@ -40,9 +41,11 @@ public class PlayState extends GameState {
 
     public void render(GraphicsContext context) {
         table.render(context);
-        for (Cup c : GV.getInstance().cups()) {
-            c.render(context);
+        if (GV.getInstance().gameStarted()||true) {
+            for (Cup c : GV.getInstance().cups()) {
+                c.render(context);
+            }
+            ball.render(context);
         }
-        ball.render(context);
     }
 }

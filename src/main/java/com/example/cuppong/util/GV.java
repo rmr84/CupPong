@@ -3,6 +3,7 @@ package com.example.cuppong.util;
 import com.example.cuppong.objects.Cup;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class GV { //gamevars
     private static volatile GV instance;
@@ -14,8 +15,11 @@ public class GV { //gamevars
     private final int _width = 1000;
     private final int _height = 725;
     private ArrayList<Cup> _cups = new ArrayList<>();
+    private int _id=-1;
+    private boolean _midshot = false;
 
     private boolean _gamestarted = false;
+    private boolean _launch = false;
 
     private GV() {
     }
@@ -62,7 +66,16 @@ public class GV { //gamevars
 
     public boolean gameStarted() { return _gamestarted; }
 
-    public void startGame() { _gamestarted = true; }
+    public void startGame() {
+        if (_gamestarted)
+            return;
+        _gamestarted = true;
+        if (_myturn) {
+            _throwing=true;
+        }
+
+        System.out.println("GS: " + _gamestarted + ", MT: " + _myturn + ", T:" + _throwing);
+    }
 
     public ArrayList<Cup> cups() { return _cups; }
 
@@ -76,5 +89,19 @@ public class GV { //gamevars
 
     public void setThrowing(boolean value) {
         _throwing=value;
+    }
+
+    public void setId(int id) { _id=id; }
+
+    public int getId() { return _id; }
+
+    public void setMidShot(boolean value) { _midshot = value; }
+
+    public boolean getMidShot() { return _midshot; }
+
+    public boolean ballLaunch() { return _launch; }
+
+    public void setLaunch(boolean value) {
+        _launch = value;
     }
 }

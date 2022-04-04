@@ -22,13 +22,21 @@ public class Message implements Serializable {
         return type;
     }
 
-    public String getParam(String key) {
-        return params.get(key);
-    }
-
     @Override
     public String toString() {
         return "Type: " + type + "\n" +
                 "Params:\n" + params.toString();
+    }
+
+    public int getInt(String key) {
+        return Integer.parseInt(params.get(key));
+    }
+
+    public boolean getBool(String key) {
+        return Boolean.parseBoolean(params.get(key));
+    }
+
+    public String getString(String key) {
+        return params.get(key);
     }
 }

@@ -80,9 +80,13 @@ public class LobbyController {
             labelStatus.setText("Connected");
             btnCreateMatch.setText("Cancel");
 
-            ClientHandler.getInstance().connect(4444);
+            boolean con = ClientHandler.getInstance().connect(4444);
 
-            StageManager.getInstance().showhide(StageManager.PLAY, StageManager.LOBBY);
+            if(con) {
+                StageManager.getInstance().showhide(StageManager.PLAY, StageManager.LOBBY);
+            } else {
+                System.out.println("Server not found.");
+            }
         } else {
             btnJoinMatch.setDisable(false);
             textFieldJoinKey.clear();

@@ -32,15 +32,33 @@ public class GameStage {
         });
 
         canvas.setOnMousePressed(mouseEvent -> {
-            if (mouseEvent.getButton()== MouseButton.SECONDARY) {
-
+            if (GV.getInstance().isMyTurn()) {
+                if (mouseEvent.getButton()== MouseButton.SECONDARY) {
+                    GV.getInstance().setThrowing(true);
+                    MouseHandler.getInstance().setMouseDown(false);
+                    GV.getInstance().setReset(true);
+                } else {
+                    MouseHandler.getInstance().setMouseDown(true);
+                    if (GV.getInstance().throwing()) {
+                        GV.getInstance().setReset(false);
+                        GV.getInstance().setMidShot(true);
+                        MouseHandler.getInstance().setStartX();
+                        MouseHandler.getInstance().setStartY();
+                    }
+                }
             }
-            MouseHandler.getInstance().setMouseDown(true);
         });
 
         canvas.setOnMouseReleased(mouseEvent -> {
-            MouseHandler.getInstance().setMouseDown(false);
-            GV.getInstance().setReset(false);
+            if (GV.getInstance().isMyTurn()) {
+                MouseHandler.getInstance().setMouseDown(false);
+                GV.getInstance().setMidShot(false);
+                if (!GV.getInstance().wasReset()) {
+                    GV.getInstance().setThrowing(false);
+                    GV.getInstance().setLaunch(true);
+                }
+            }
+            //GV.getInstance().setReset(false);
         });
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -53,7 +71,7 @@ public class GameStage {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                gc.clearRect(0, 0, 1280, 720);
+                gc.clearRect(0, 0, 1000, 1000);
                 manager.update();
                 manager.input(k);
                 manager.render(gc);

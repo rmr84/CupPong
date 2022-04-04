@@ -28,7 +28,8 @@ public class ClientHandler {
         return result;
     }
 
-    public void connect(int port) {
+    public boolean connect(int port) {
+        boolean con = false;
         try {
             InetAddress addr = InetAddress.getByName("localhost");
             client = new Socket(addr, port);
@@ -40,14 +41,15 @@ public class ClientHandler {
             c.start();
 
             sendMessage("reg,cups:6");
+            con=true;
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
-            return;
         } catch (IOException e) {
             e.printStackTrace();
-            return;
         }
+
+        return con;
     }
 
     public void disconnect() {

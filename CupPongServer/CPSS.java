@@ -36,10 +36,13 @@ public class CPSS {
                             ObjectInputStream in = new ObjectInputStream(newSocket.getInputStream());
                             // Message reg = (Message) in.readObject();
                             sendMessage("A new user has connected");
-                            threads[numUsers] = new UserThread(newSocket, numUsers, in);
+                            threads[numUsers] = new UserThread(newSocket, numUsers, in, numUsers >= 2, numUsers == 0);
                             threads[numUsers].start();
                             System.out.println("Connection " + numUsers + users[numUsers]);
                             numUsers++;
+                            if (numUsers == 2) {
+                                startMatch();
+                            }
                         }
                     } catch (Exception e) {
                         System.out.println("Problem with connection...terminating");
@@ -81,16 +84,33 @@ public class CPSS {
         sendMessage("Client#" + id + " disconnected.");
     }
 
+    public void startMatch() {
+        sendMessage("init");
+    }
+
     private class UserThread extends Thread {
         private Socket mySocket;
         private ObjectInputStream myInputStream;
         private ObjectOutputStream myOutputStream;
         private int myId;
 
-        private UserThread(Socket newSocket, int id, ObjectInputStream in) throws IOException {
+        private boolean myTurn = false;
+        private boolean isSpectator;
+        private int cupsLeft;
+        private int shots = 0;
+        private int shotsMade = 0;
+
+        private UserThread(Socket newSocket, int id, ObjectInputStream in, boolean spectator, boolean turn)
+                throws IOException {
             mySocket = newSocket;
             myId = id;
             myInputStream = in;
+            isSpectator = spectator;
+            if (isSpectator) {
+                myTurn = false;
+            } else {
+                myTurn = turn;
+            }
             myOutputStream = new ObjectOutputStream(newSocket.getOutputStream());
         }
 
@@ -113,12 +133,31 @@ public class CPSS {
                 try {
                     str = (String) myInputStream.readObject();
                     synchronized (this) {
-                        CPSS.this.sendMessage("hi");
                         Message m = new Message(str);
                         switch (m.getType()) {
                             case "reg":
-                                // CPSS.this.sendMessage("got reg");
-                                System.out.println("got reg");
+                                cupsLeft = m.getInt("cups");
+                                sendMessage("reg", new String[] { "id:" + myId, "turn:" + myTurn });
+                                break;
+                            case "throw":
+                                int made = m.getInt("made");
+                                shots++;
+                                if (made != -1) {
+                                    shotsMade++;
+                                }
+                                if (shots == 2) {
+                                    if (shotsMade == 2) {
+                                        broadcast("turn", new String[] { "id:" + myId, "turn:true", "misc:ballsback" });
+                                    } else {
+                                        broadcast("turn", new String[] { "id:" + myId, "turn:false" });
+                                    }
+                                }
+                                break;
+                            case "disc":
+                                alive = false;
+                                break;
+                            default:
+                                sendMessage("system", new String[] { "msg:Type '" + m.getType() + "' is invalid." });
                                 break;
                         }
                     }
@@ -131,6 +170,30 @@ public class CPSS {
                 }
             }
             removeClient(myId);
+        }
+
+        public void broadcast(String type, String[] params) {
+            String p = "";
+            for (String s : params) {
+                p += "," + s;
+            }
+            p = type + p;
+            CPSS.this.sendMessage(p);
+        }
+
+        public void sendMessage(String type, String[] params) {
+
+            String p = "";
+            for (String s : params) {
+                p += "," + s;
+            }
+            p = type + p;
+            try {
+                myOutputStream.writeObject(p);
+                myOutputStream.flush();
+            } catch (IOException e) {
+                System.out.println("Could not send message to user.");
+            }
         }
     }
 }
