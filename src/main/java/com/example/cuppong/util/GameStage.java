@@ -31,6 +31,12 @@ public class GameStage {
             MouseHandler.getInstance().update(x,y);
         });
 
+        canvas.setOnMouseDragged(mouseEvent -> {
+            double x = mouseEvent.getX();
+            double y = mouseEvent.getY();
+            MouseHandler.getInstance().update(x,y);
+        });
+
         canvas.setOnMousePressed(mouseEvent -> {
             if (GV.getInstance().isMyTurn()) {
                 if (mouseEvent.getButton()== MouseButton.SECONDARY) {

@@ -43,6 +43,8 @@ public class ClientHandler {
             sendMessage("reg,cups:6");
             con=true;
 
+        } catch (ConnectException e) {
+            System.out.println("[Connection Refused] Server is not running.");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -63,6 +65,10 @@ public class ClientHandler {
         }
     }
 
+    public boolean isConnected() {
+        return client.isConnected();
+    }
+
     public void sendMessage(String input) {
         try {
             //Message m = new Message(input);
@@ -72,5 +78,13 @@ public class ClientHandler {
             System.out.println("Error when sending message.\n");
             e.printStackTrace();
         }
+    }
+
+    public void trylogin(String user, String pass) {
+        sendMessage("login,user:" + user + ",pass:" + pass);
+    }
+
+    public void tryregister(String user, String pass) {
+        sendMessage("register,user:" + user + ",pass:" + pass);
     }
 }

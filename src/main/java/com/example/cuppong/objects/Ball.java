@@ -46,6 +46,8 @@ public class Ball extends Sprite {
         double endX = MouseHandler.getInstance().getX();
         double endY = MouseHandler.getInstance().getY();
 
+        System.out.println(endX + ", " + endY);
+
         if (endY >= startY || endY > 300) {
             //reset(false);
             //return;

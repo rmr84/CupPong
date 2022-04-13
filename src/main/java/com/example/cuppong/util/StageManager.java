@@ -10,6 +10,7 @@ public class StageManager {
     public static final int PLAY = 3;
     public static final int RESULT = 4;
     private static ArrayList<Stage> _stages;
+    private int _currentstage = 0;
 
     private static volatile StageManager instance = null;
     private static Object lockobj = new Object();
@@ -37,6 +38,7 @@ public class StageManager {
             return;
         }
 
+        _currentstage = stage;
         _stages.get(stage).show();
     }
 
@@ -60,5 +62,9 @@ public class StageManager {
 
     public void add(Stage stage) {
         _stages.add(stage);
+    }
+
+    public int currentStage() {
+        return _currentstage;
     }
 }

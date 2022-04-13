@@ -19,3 +19,9 @@
     -fx-font-weight: 700;
     -fx-font-size: 50px;
 }
+
+.onlineplayer {
+    -fx-text-fill: #fff;
+    -fx-font-weight:700;
+    -fx-font-size:22px;
+}

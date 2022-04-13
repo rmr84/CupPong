@@ -1,6 +1,8 @@
 package com.example.cuppong.util;
 
 
+import javafx.application.Platform;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
@@ -42,6 +44,34 @@ public class Client extends Thread {
                             //win
                         } else {
                             //lose
+                        }
+                        break;
+                    case "sys":
+                        String systemMessage = m.getString("msg");
+                        System.out.println("[SYSTEM]: " + systemMessage);
+                        break;
+                    case "register":
+                        boolean registered = m.getBool("status");
+                        if (registered) {
+                            Platform.runLater(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    StageManager.getInstance().showhide(StageManager.LOBBY, StageManager.MAINMENU);
+                                }
+                            });
+                        }
+                        break;
+                    case "login":
+                        boolean loggedin = m.getBool("status");
+                        if (loggedin) {
+                            Platform.runLater(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    StageManager.getInstance().showhide(StageManager.LOBBY, StageManager.MAINMENU);
+                                }
+                            });
                         }
                         break;
 

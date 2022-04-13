@@ -1,12 +1,19 @@
+
+/**
+ * The main server class.
+ */
+
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.FileHandler;
 
 public class CPSS {
-    private ServerSocket ss;
+
     private final int MaxUsers = 9;
+    private ServerSocket ss;
     private Socket[] users;
     private UserThread[] threads;
     private int numUsers;
@@ -100,6 +107,8 @@ public class CPSS {
         private int shots = 0;
         private int shotsMade = 0;
 
+        private UserState state = UserState.NOTCONNECTED;
+
         private UserThread(Socket newSocket, int id, ObjectInputStream in, boolean spectator, boolean turn)
                 throws IOException {
             mySocket = newSocket;
@@ -134,31 +143,76 @@ public class CPSS {
                     str = (String) myInputStream.readObject();
                     synchronized (this) {
                         Message m = new Message(str);
-                        switch (m.getType()) {
-                            case "reg":
-                                cupsLeft = m.getInt("cups");
-                                sendMessage("reg", new String[] { "id:" + myId, "turn:" + myTurn });
-                                break;
-                            case "throw":
-                                int made = m.getInt("made");
-                                shots++;
-                                if (made != -1) {
-                                    shotsMade++;
-                                }
-                                if (shots == 2) {
-                                    if (shotsMade == 2) {
-                                        broadcast("turn", new String[] { "id:" + myId, "turn:true", "misc:ballsback" });
-                                    } else {
-                                        broadcast("turn", new String[] { "id:" + myId, "turn:false" });
+                        if (!m.isEmpty()) {
+                            switch (m.getType()) {
+                                case "register": // user is trying to register
+                                    if (state != UserState.NOTCONNECTED) {
+                                        sendMessage("sys", new String[] { "msg:You are already signed in." });
+                                        break;
                                     }
-                                }
-                                break;
-                            case "disc":
-                                alive = false;
-                                break;
-                            default:
-                                sendMessage("system", new String[] { "msg:Type '" + m.getType() + "' is invalid." });
-                                break;
+
+                                    String user = m.getString("user");
+                                    String pass = m.getString("pass");
+
+                                    System.out.println("Register: " + user + ", " + pass);
+
+                                    boolean registered = FileManager.getInstance().register(m.getString("user"),
+                                            m.getString("pass"));
+                                    if (registered) {
+                                        state = UserState.LOBBY;
+                                    }
+                                    sendMessage("register", new String[] { "status:" + registered });
+                                    break;
+                                case "login": // user is trying to log in
+                                    if (state != UserState.NOTCONNECTED) {
+                                        sendMessage("sys", new String[] { "msg:You are already signed in." });
+                                        break;
+                                    }
+                                    boolean loggedin = FileManager.getInstance().login(m.getString("user"),
+                                            m.getString("pass"));
+                                    if (loggedin) {
+                                        state = UserState.LOBBY;
+                                    }
+                                    sendMessage("login", new String[] { "status:" + loggedin });
+                                    break;
+                                case "reg": // user just joined a match
+                                    if (state == UserState.NOTCONNECTED) {
+                                        // this shouldnt be possible
+                                        sendMessage("leave", new String[0]);
+                                        break;
+                                    }
+                                    if (state == UserState.GAME) {
+                                        sendMessage("sys", new String[] { "msg:You are already in a game." });
+                                    }
+                                    state = UserState.GAME;
+                                    cupsLeft = m.getInt("cups");
+                                    sendMessage("reg", new String[] { "id:" + myId, "turn:" + myTurn });
+                                    break;
+                                case "throw": // user threw the ball
+                                    int made = m.getInt("made");
+                                    shots++;
+                                    if (made != -1) {
+                                        shotsMade++;
+                                    }
+                                    if (shots == 2) {
+                                        if (shotsMade == 2) {
+                                            broadcast("turn",
+                                                    new String[] { "id:" + myId, "turn:true", "misc:ballsback" });
+                                        } else {
+                                            broadcast("turn", new String[] { "id:" + myId, "turn:false" });
+                                        }
+                                    }
+                                    break;
+                                case "disc": // user just disconnected
+                                    alive = false;
+                                    break;
+                                default: // uncaught message type
+                                    sendMessage("sys",
+                                            new String[] { "msg:Type '" + m.getType() + "' is invalid." });
+                                    break;
+                            }
+                        } else {
+                            sendMessage("sys", new String[] { "msg:Message was empty." });
                         }
                     }
                 } catch (ClassNotFoundException e) {
