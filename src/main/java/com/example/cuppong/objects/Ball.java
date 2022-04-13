@@ -8,8 +8,6 @@ public class Ball extends Sprite {
 
     private final int DEFAULT_SIZE = 30;
 
-    private boolean mobile=false;
-
     private final float Cd = .47f;
     private final float rho = 1.22f;
     private final float radius = 15f;
@@ -29,7 +27,6 @@ public class Ball extends Sprite {
         pos.set(400, 300, 400);
         vel=new Vector3F(0,0,0);
         vel.setY(6);
-        mobile=true;
         _width = DEFAULT_SIZE;
         _height=DEFAULT_SIZE;
         shadow = new Shadow(this, pos.getZ(), pos.getX());
@@ -46,18 +43,15 @@ public class Ball extends Sprite {
         double endX = MouseHandler.getInstance().getX();
         double endY = MouseHandler.getInstance().getY();
 
-        System.out.println(endX + ", " + endY);
 
-        if (endY >= startY || endY > 300) {
-            //reset(false);
-            //return;
+        if (endY >= startY || endY < 300) {
+            reset(false, -1);
+            return;
         }
 
-        System.out.println("Start x: " + startX + ", Start y: " + startY);
-        System.out.println("Ex: " + endX + ", endy: " + endY);
-        System.out.println("Vx: " + (float)((endX-startX)/15.0) + ", Vy: " + (float)((endY-startY)/15.0));
+        ClientHandler.getInstance().sendMessage("throw");
 
-        vel.set((float)((endY-startY)/15.0), 3, (float)((endX-startX)/15.0));
+        vel.set((float)((endY-startY)/15.0), 5, (float)((endX-startX)/15.0));
         //pos.set((float)x, 300, (float)z);
         //vel.set(0,0,0);
     }
@@ -66,16 +60,15 @@ public class Ball extends Sprite {
         _width=(int)(DEFAULT_SIZE+sizeMult);
         _height=(int)(DEFAULT_SIZE+sizeMult);
 
-        //System.out.println("MT: " + GV.getInstance().isMyTurn() + ", T: " + GV.getInstance().throwing() + ", R: " + GV.getInstance().wasReset() + ", MS: " + GV.getInstance().getMidShot());
-
         if (GV.getInstance().ballLaunch()) {
             GV.getInstance().setLaunch(false);
             launch();
         }
 
-        if (GV.getInstance().isMyTurn()) {
-            if (GV.getInstance().throwing()) {
-                if (!GV.getInstance().getMidShot()) {
+        if (GV.getInstance().isMyTurn()) {  //is it my turn
+            if (GV.getInstance().throwing()) {  //am i able to throw
+                if (!GV.getInstance().getMidShot()) {   //is the ball moving
+                    //if not, make ball centered on mouse
                     float x = (float)(MouseHandler.getInstance().getX() - getWidth()/2);
                     float y = (float)(MouseHandler.getInstance().getY() - getHeight()/2);
                     pos.set(y, 300, x);
@@ -102,19 +95,23 @@ public class Ball extends Sprite {
                 pos.addY((float) (vel.getY() * rate * 100f));
                 pos.addZ((float) (vel.getZ() * rate * 100f));
 
+                //if the ball gets thrown behind then reset but dont count
                 if (pos.getX() < 0 - _width) {
-                    reset(false);
+                    reset(false, -1);
                 }
 
+                //if the ball flies off the screen on opponent side reset and count it
                 if (pos.getX() > 1000 + _width) {
-                    reset(true);
+                    reset(true, -1);
                 }
 
+                //if ball has stopped bouncing reset
                 if (lastY == pos.getY() && !GV.getInstance().wasReset()) {
-                    reset(false);
+                    reset(false, -1);
                 }
                 lastY = pos.getY();
 
+                //test for collisions on cups
                 if (pos.getY() > GV.getInstance().height() - radius) {
                     vel.mulY(restitution);
                     pos.setY((float) (GV.getInstance().height() - radius));
@@ -167,37 +164,34 @@ public class Ball extends Sprite {
 
             //ctx.drawImage(images.dash, 0, 325, 1000, 25);
 
-            shadow.update();
+            //shadow.update();
         } else {
 
         }
     }
 
     public void render(GraphicsContext context) {
-        shadow.render(context);
+        //shadow.render(context);
         context.drawImage(_image, pos.getZ(), pos.getX(), _width, _height);
     }
 
-    public boolean isMobile() {
-        return mobile;
-    }
+    /**
+     * Reset ball after a throw
+     * @param counted   If the throw counted or not
+     * @param made      If the user made the ball into a cup. -1 if not, else send the index of cup they hit
+     */
+    private void reset(boolean counted, int made) {
 
-    public void setMobile(boolean mobile) {
-        this.mobile=mobile;
-    }
+        ClientHandler.getInstance().sendMessage("rball,counted:" + counted + ",made:" + made);
 
-    private void reset(boolean counted) {
-        if (counted) {
-            //ClientHandler.getInstance().sendMessage("throw");
-        } else {
-
-        }
-
-        //vel.set(0,0,0);
-        pos.set(400,(float)(400-_height),300);
-
-        vel.setY(6);
+        vel.set(0,0,0);
         shadow = new Shadow(this, pos.getZ(), pos.getX());
+        GV.getInstance().setThrowing(true);
+        MouseHandler.getInstance().setMouseDown(false);
         GV.getInstance().setReset(true);
+        float x = (float)(MouseHandler.getInstance().getX() - getWidth()/2);
+        float y = (float)(MouseHandler.getInstance().getY() - getHeight()/2);
+        pos.set(y, 400, x);
+
     }
 }

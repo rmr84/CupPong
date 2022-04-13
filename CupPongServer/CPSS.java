@@ -100,6 +100,7 @@ public class CPSS {
         private ObjectInputStream myInputStream;
         private ObjectOutputStream myOutputStream;
         private int myId;
+        private String name = "guest";
 
         private boolean myTurn = false;
         private boolean isSpectator;
@@ -160,6 +161,7 @@ public class CPSS {
                                             m.getString("pass"));
                                     if (registered) {
                                         state = UserState.LOBBY;
+                                        name = user;
                                     }
                                     sendMessage("register", new String[] { "status:" + registered });
                                     break;
@@ -172,6 +174,7 @@ public class CPSS {
                                             m.getString("pass"));
                                     if (loggedin) {
                                         state = UserState.LOBBY;
+                                        name = m.getString("user");
                                     }
                                     sendMessage("login", new String[] { "status:" + loggedin });
                                     break;
@@ -186,20 +189,26 @@ public class CPSS {
                                     }
                                     state = UserState.GAME;
                                     cupsLeft = m.getInt("cups");
-                                    sendMessage("reg", new String[] { "id:" + myId, "turn:" + myTurn });
+                                    sendMessage("reg", new String[] { "turn:" + myTurn });
                                     break;
                                 case "throw": // user threw the ball
-                                    int made = m.getInt("made");
                                     shots++;
+                                    break;
+                                case "rball": // reset ball: either in cup or missed
+                                    boolean counted = m.getBool("counted");
+                                    if (!counted) {
+                                        return;
+                                    }
+                                    int made = m.getInt("made");
                                     if (made != -1) {
                                         shotsMade++;
                                     }
                                     if (shots == 2) {
                                         if (shotsMade == 2) {
                                             broadcast("turn",
-                                                    new String[] { "id:" + myId, "turn:true", "misc:ballsback" });
+                                                    new String[] { "user:" + name, "turn:true", "misc:ballsback" });
                                         } else {
-                                            broadcast("turn", new String[] { "id:" + myId, "turn:false" });
+                                            broadcast("turn", new String[] { "user:" + name, "turn:false" });
                                         }
                                     }
                                     break;
@@ -219,7 +228,7 @@ public class CPSS {
                     System.out.println("Error receiving message....shutting down");
                     alive = false;
                 } catch (IOException e) {
-                    System.out.println("Client#" + myId + " disconnected.");
+                    System.out.println(name + "#" + myId + " disconnected.");
                     alive = false;
                 }
             }

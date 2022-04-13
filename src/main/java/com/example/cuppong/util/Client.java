@@ -2,6 +2,7 @@ package com.example.cuppong.util;
 
 
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -48,7 +49,10 @@ public class Client extends Thread {
                         break;
                     case "sys":
                         String systemMessage = m.getString("msg");
-                        System.out.println("[SYSTEM]: " + systemMessage);
+
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("System");
+                        alert.setContentText(systemMessage);
                         break;
                     case "register":
                         boolean registered = m.getBool("status");

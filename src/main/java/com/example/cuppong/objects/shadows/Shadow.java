@@ -87,6 +87,6 @@ public class Shadow {
     private Vector2F newPos() {
         double margin = ((double)_parent.getWidth() - (double)_parent.get_default_width()) / 2d;
         double calcY = ((yBase + (WINDOWH - _parent.getPos().getY()))+_parent.getHeight()) - ((double)_parent.getHeight()/2.8);
-        return new Vector2F((float)(xBase + margin), (float)calcY);
+        return new Vector2F((float)(_parent.getPos().getZ() + margin), (float)calcY);
     }
 }

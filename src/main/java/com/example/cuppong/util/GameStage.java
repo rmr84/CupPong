@@ -56,7 +56,7 @@ public class GameStage {
         });
 
         canvas.setOnMouseReleased(mouseEvent -> {
-            if (GV.getInstance().isMyTurn()) {
+            if (GV.getInstance().isMyTurn() && GV.getInstance().getMidShot()) {
                 MouseHandler.getInstance().setMouseDown(false);
                 GV.getInstance().setMidShot(false);
                 if (!GV.getInstance().wasReset()) {
