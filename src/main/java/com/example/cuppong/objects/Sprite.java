@@ -6,9 +6,6 @@ import com.example.cuppong.util.Vector3F;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-import java.awt.*;
-import java.util.Vector;
-
 public abstract class Sprite {
     protected int _width;
     protected int _height;
@@ -56,6 +53,11 @@ public abstract class Sprite {
     public Bounds bounds() { return _bounds; }
 
     public void setBounds(Bounds b) { _bounds = b; }
+
+    public void use_defaultsize() {
+        _width = default_width;
+        _height = default_height;
+    }
 
     public void set_defaultsize(int w, int h) {
         default_width = w;
