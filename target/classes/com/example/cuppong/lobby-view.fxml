@@ -11,7 +11,7 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="408.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cuppong.controllers.LobbyController">
    <children>
-      <GridPane prefHeight="132.0" prefWidth="408.0">
+      <GridPane prefHeight="132.0" prefWidth="408.0" styleClass="topbox" stylesheets="@styles/menu.css">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="444.0" minWidth="0.0" prefWidth="16.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="444.0" minWidth="10.0" prefWidth="366.0" />
@@ -30,7 +30,7 @@
             <Button fx:id="btnCreateMatch" mnemonicParsing="false" onAction="#btnCreateMatch_Click" prefHeight="102.0" prefWidth="366.0" styleClass="menubtn" stylesheets="@styles/menu.css" text="Play" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <GridPane prefHeight="476.0" prefWidth="408.0">
+      <GridPane prefHeight="476.0" prefWidth="408.0" styleClass="topbox" stylesheets="@styles/menu.css">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
@@ -39,7 +39,7 @@
           <RowConstraints maxHeight="452.0" minHeight="10.0" prefHeight="437.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label styleClass="onlineplayer" stylesheets="@styles/menu.css" text="Online players: 0" />
+            <Label fx:id="labelOnline" styleClass="onlineplayer" stylesheets="@styles/menu.css" text="My Stats" />
             <ListView fx:id="lvOnlinePlayers" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
          </children>
       </GridPane>

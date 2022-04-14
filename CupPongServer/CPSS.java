@@ -5,15 +5,10 @@
 
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.logging.FileHandler;
 
 public class CPSS {
 
     private final int MaxUsers = 9;
-    private ServerSocket ss;
     private Socket[] users;
     private UserThread[] threads;
     private int numUsers;
@@ -41,14 +36,15 @@ public class CPSS {
                         synchronized (this) {
                             users[numUsers] = newSocket;
                             ObjectInputStream in = new ObjectInputStream(newSocket.getInputStream());
-                            // Message reg = (Message) in.readObject();
-                            sendMessage("A new user has connected");
                             threads[numUsers] = new UserThread(newSocket, numUsers, in, numUsers >= 2, numUsers == 0);
                             threads[numUsers].start();
                             System.out.println("Connection " + numUsers + users[numUsers]);
                             numUsers++;
                             if (numUsers == 2) {
                                 startMatch();
+                                System.out.println("#################################");
+                                System.out.println("New match started.");
+                                System.out.println("#################################");
                             }
                         }
                     } catch (Exception e) {
@@ -68,7 +64,7 @@ public class CPSS {
                 out.writeObject(msg);
                 out.flush();
             } catch (IOException e) {
-                System.out.println("Problem sending message");
+                // System.out.println("Problem sending message");
             }
         }
     }
@@ -88,7 +84,6 @@ public class CPSS {
             threads[i].setId(i);
         }
         numUsers--;
-        sendMessage("Client#" + id + " disconnected.");
     }
 
     public void startMatch() {
@@ -104,9 +99,15 @@ public class CPSS {
 
         private boolean myTurn = false;
         private boolean isSpectator;
-        private int cupsLeft;
+        private int cupsLeft = 6;
         private int shots = 0;
         private int shotsMade = 0;
+
+        private int STAT_MADE = 0;
+        private int STAT_THROWS = 0;
+        private int STAT_BACK = 0;
+
+        private int turn = 1;
 
         private UserState state = UserState.NOTCONNECTED;
 
@@ -136,6 +137,7 @@ public class CPSS {
             myId = newId;
         }
 
+        @Override
         public void run() {
             boolean alive = true;
             while (alive) {
@@ -163,7 +165,7 @@ public class CPSS {
                                         state = UserState.LOBBY;
                                         name = user;
                                     }
-                                    sendMessage("register", new String[] { "status:" + registered });
+                                    sendMessage("register", new String[] { "status:" + registered, "name:" + name });
                                     break;
                                 case "login": // user is trying to log in
                                     if (state != UserState.NOTCONNECTED) {
@@ -176,7 +178,7 @@ public class CPSS {
                                         state = UserState.LOBBY;
                                         name = m.getString("user");
                                     }
-                                    sendMessage("login", new String[] { "status:" + loggedin });
+                                    sendMessage("login", new String[] { "status:" + loggedin, "name:" + name });
                                     break;
                                 case "reg": // user just joined a match
                                     if (state == UserState.NOTCONNECTED) {
@@ -191,29 +193,80 @@ public class CPSS {
                                     cupsLeft = m.getInt("cups");
                                     sendMessage("reg", new String[] { "turn:" + myTurn });
                                     break;
-                                case "throw": // user threw the ball
-                                    shots++;
+                                case "throw": // user threw the ball [deprecated]
                                     break;
                                 case "rball": // reset ball: either in cup or missed
                                     boolean counted = m.getBool("counted");
                                     if (!counted) {
-                                        return;
+                                        break;
                                     }
+                                    shots++;
+                                    STAT_THROWS++;
                                     int made = m.getInt("made");
+                                    System.out.println("[Throw] from " + name + ". Shots this turn: " + shots);
+
                                     if (made != -1) {
+                                        System.out.println("\t-Made: " + (made > -1 ? "True" : "False"));
+                                        broadcast("cup", new String[] { "name:" + name, "id:" + getCup(made) });
+                                        System.out.println("Broadcasted [cup] ID: " + made);
                                         shotsMade++;
-                                    }
-                                    if (shots == 2) {
-                                        if (shotsMade == 2) {
-                                            broadcast("turn",
-                                                    new String[] { "user:" + name, "turn:true", "misc:ballsback" });
-                                        } else {
-                                            broadcast("turn", new String[] { "user:" + name, "turn:false" });
+                                        STAT_MADE++;
+                                        cupsLeft--;
+                                        System.out.println("\t-Cups left: " + cupsLeft);
+                                        if (cupsLeft == 0) {
+                                            broadcast("gameover", new String[] { "winner:" + name });
+                                            System.out.println("#################################");
+                                            System.out.println("Game is over. " + name + " wins.");
+                                            System.out.println("#################################");
+                                            shots = 0;
+                                            shotsMade = 0;
                                         }
                                     }
+
+                                    if (shots == 2) {
+
+                                        if (shotsMade == 2) {
+                                            STAT_BACK++;
+                                            broadcast("turn",
+                                                    new String[] { "name:" + name, "turn:true", "misc:ballsback" });
+                                            System.out.println(name + " got balls back. It is their turn.");
+                                        } else {
+                                            broadcast("turn",
+                                                    new String[] { "name:" + name, "turn:true", "misc:null" });
+                                            System.out.println(name + " used 2 shots. It is not their turn.");
+                                        }
+                                        shots = 0;
+                                        shotsMade = 0;
+                                    } else {
+                                        sendMessage("throw", new String[] { "made:" + (made > -1) });
+                                    }
+
                                     break;
                                 case "disc": // user just disconnected
+                                    System.out.println(name + "[#" + myId + "] disconnected.");
                                     alive = false;
+                                    break;
+                                case "join":
+                                    broadcast("join", new String[] { "name:" + name });
+                                    break;
+                                case "leave":
+                                    broadcast("leave", new String[] { "name:" + name });
+                                    break;
+                                case "win":
+                                    FileManager.getInstance().writestats(name, newStats(true));
+                                    STAT_MADE = 0;
+                                    STAT_THROWS = 0;
+                                    STAT_BACK = 0;
+                                    break;
+                                case "lose":
+                                    FileManager.getInstance().writestats(name, newStats(false));
+                                    STAT_MADE = 0;
+                                    STAT_THROWS = 0;
+                                    STAT_BACK = 0;
+                                    break;
+                                case "stats":
+                                    sendMessage("stats",
+                                            new String[] { "s:" + FileManager.getInstance().getstats(name) });
                                     break;
                                 default: // uncaught message type
                                     sendMessage("sys",
@@ -228,11 +281,37 @@ public class CPSS {
                     System.out.println("Error receiving message....shutting down");
                     alive = false;
                 } catch (IOException e) {
-                    System.out.println(name + "#" + myId + " disconnected.");
+                    System.out.println(name + "[#" + myId + "] disconnected.");
                     alive = false;
                 }
             }
+            System.out.println("removing");
             removeClient(myId);
+        }
+
+        public int getCup(int i) {
+            return 11 - i;
+
+            /*
+             * 
+             * switch (i) {
+             * case 6:
+             * return 5;
+             * case 7:
+             * return 4;
+             * case 8:
+             * return 3;
+             * case 9:
+             * return 2;
+             * case 10:
+             * return 1;
+             * case 11:
+             * return 0;
+             * default:
+             * return 0;
+             * 
+             * }
+             */
         }
 
         public void broadcast(String type, String[] params) {
@@ -257,6 +336,19 @@ public class CPSS {
             } catch (IOException e) {
                 System.out.println("Could not send message to user.");
             }
+        }
+
+        public String newStats(boolean win) {
+            String[] stats_str = FileManager.getInstance().getstats(name).split(",");
+            int[] stats = new int[5];
+            for (int i = 0; i < stats_str.length; i++) {
+                stats[i] = Integer.parseInt(stats_str[i]);
+            }
+            stats[win ? 0 : 1]++;
+            stats[2] += STAT_MADE;
+            stats[3] += STAT_THROWS - STAT_MADE;
+            stats[4] += STAT_BACK;
+            return stats[0] + "," + stats[1] + "," + stats[2] + "," + stats[3] + "," + stats[4];
         }
     }
 }

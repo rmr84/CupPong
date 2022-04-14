@@ -10,7 +10,7 @@ public class Bounds {
 
     public Bounds(float x, float y, int width, int height, boolean use_padding) {
         _top = y+(use_padding ? _PADDING : 0);
-        _bottom = y+height+(use_padding ? -1*_PADDING : 0);
+        _bottom = y+(0.4*height)+(use_padding ? -1*_PADDING : 0);//bottom is the bottom of the rim
         _left = x+(use_padding ? _PADDING : 0);
         _right = x+width+(use_padding ? -1*_PADDING : 0);
     }

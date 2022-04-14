@@ -52,9 +52,9 @@ public class MouseHandler {
         _mousedown=value;
     }
 
-    public void setStartX() { startX=_x; System.out.println(_x); }
+    public void setStartX() { startX=_x; }
 
-    public void setStartY() { startY=_y; System.out.println(_y); }
+    public void setStartY() { startY=_y; }
 
     public double getStartX() { return startX; }
 

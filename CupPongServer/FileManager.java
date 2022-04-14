@@ -125,7 +125,8 @@ public class FileManager {
                 if (fileContent.get(i).startsWith(user)) {
                     String line = fileContent.get(i);
                     int splice = line.indexOf(",", line.indexOf(",") + 1);
-                    stats = line.substring(splice);
+                    stats = line.substring(splice + 1);
+                    break;
                 }
             }
         } catch (Exception e) {

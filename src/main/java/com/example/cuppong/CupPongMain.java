@@ -1,6 +1,8 @@
 package com.example.cuppong;
 
 
+import com.example.cuppong.controllers.LobbyController;
+import com.example.cuppong.controllers.ResultController;
 import com.example.cuppong.util.Client;
 import com.example.cuppong.util.ClientHandler;
 import com.example.cuppong.util.GameStage;
@@ -49,13 +51,7 @@ public class CupPongMain extends Application {
             StageManager.getInstance().add(howtoplay);
 
 
-            Stage lobby = loadStage("lobby-view.fxml", "Cup Pong", 408, 600);
-            lobby.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent t) {
-                    kill();
-                }
-            });
+            Stage lobby = loadLobby("lobby-view.fxml", "Cup Pong", 408,600);
             StageManager.getInstance().add(lobby);
 
             Stage play = new GameStage().create();
@@ -67,7 +63,7 @@ public class CupPongMain extends Application {
             });
             StageManager.getInstance().add(play);
 
-            Stage results = loadStage("result-view.fxml", "Results", 500, 500);
+            Stage results = loadResults("result-view.fxml", "Results", 600, 750);
             results.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
                 public void handle(WindowEvent t) {
@@ -75,7 +71,6 @@ public class CupPongMain extends Application {
                 }
             });
             StageManager.getInstance().add(results);
-
             StageManager.getInstance().show(StageManager.MAINMENU);
         } else {
 
@@ -102,7 +97,60 @@ public class CupPongMain extends Application {
         return stage;
     }
 
+    public Stage loadLobby(String filename, String title, int w, int h) throws IOException {
+        Stage stage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(CupPongMain.class.getResource(filename));
+        Scene scene = new Scene(fxmlLoader.load(), w,h);
+        stage.setTitle(title);
+        stage.setResizable(false);
+        stage.setScene(scene);
+
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                kill();
+            }
+        });
+        stage.setOnShown(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                LobbyController c = fxmlLoader.getController();
+                c.updateStats();
+            }
+        });
+
+
+        return stage;
+    }
+
+    public Stage loadResults(String filename, String title, int w, int h) throws IOException  {
+        Stage stage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(CupPongMain.class.getResource(filename));
+        Scene scene = new Scene(fxmlLoader.load(), w,h);
+        stage.setTitle(title);
+        stage.setResizable(false);
+        stage.setScene(scene);
+
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                kill();
+            }
+        });
+        stage.setOnShown(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                ResultController c = fxmlLoader.getController();
+                c.update();
+            }
+        });
+
+
+        return stage;
+    }
+
     public void kill() {
+        ClientHandler.getInstance().sendMessage("leave");
         Platform.exit();
         System.exit(0);
     }

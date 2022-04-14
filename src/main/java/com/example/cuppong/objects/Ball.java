@@ -4,6 +4,8 @@ import com.example.cuppong.objects.shadows.Shadow;
 import com.example.cuppong.util.*;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.util.ArrayList;
+
 public class Ball extends Sprite {
 
     private final int DEFAULT_SIZE = 30;
@@ -36,6 +38,7 @@ public class Ball extends Sprite {
 
 
     public void launch() {
+        GV.getInstance().setLaunch(false);
         lastY=-1;
         GV.getInstance().setReset(false);
         double startX = MouseHandler.getInstance().getStartX();
@@ -61,7 +64,6 @@ public class Ball extends Sprite {
         _height=(int)(DEFAULT_SIZE+sizeMult);
 
         if (GV.getInstance().ballLaunch()) {
-            GV.getInstance().setLaunch(false);
             launch();
         }
 
@@ -95,47 +97,59 @@ public class Ball extends Sprite {
                 pos.addY((float) (vel.getY() * rate * 100f));
                 pos.addZ((float) (vel.getZ() * rate * 100f));
 
-                //if the ball gets thrown behind then reset but dont count
+                //if the ball is out of screen near opponent side
                 if (pos.getX() < 0 - _width) {
-                    reset(false, -1);
+                    reset(true, -1);
+                    return;
+                }
+
+                //if ball is behind you
+                if (pos.getZ() > GV.getInstance().height()) {
+                    reset(true, -1);
+                    return;
+                }
+
+                if(pos.getZ() < 0-_height) {
+                    reset(true, -1);
+                    return;
                 }
 
                 //if the ball flies off the screen on opponent side reset and count it
                 if (pos.getX() > 1000 + _width) {
-                    reset(true, -1);
+                    reset(false, -1);
+                    return;
                 }
 
                 //if ball has stopped bouncing reset
-                if (lastY == pos.getY() && !GV.getInstance().wasReset()) {
+                if ((lastY == pos.getY() || vel.getY()==0f || (vel.getZ()==0f&&vel.getZ()==0f)) && !GV.getInstance().wasReset()) {
                     reset(false, -1);
+                    return;
                 }
                 lastY = pos.getY();
+
+                mid.setX((float)(pos.getZ() + _width / 2));
+                mid.setY((float)(pos.getX() + _height / 2));
 
                 //test for collisions on cups
                 if (pos.getY() > GV.getInstance().height() - radius) {
                     vel.mulY(restitution);
                     pos.setY((float) (GV.getInstance().height() - radius));
-                    /*
-                    for (let i = 0; i < cups.length; i++) {
-                            if (ballMidX >= cups[i].hitBounds.left && ballMidX <= cups[i].hitBounds.right &&
-                                    ballMidY >= cups[i].hitBounds.top && ballMidY <= cups[i].hitBounds.bottom) {
-                                cups[i].hit = true;
-                                cupsHit++;
-                                shotsMade++;
-                                resetBall(true);
-                                global.con.send("cup", getUserid(), i);
-                                if (cupsHit >= global.cupCount) {
-                                    global.con.send("gameover", getUserid());
-                                    game.inMatch = false;
-                                }
-                                break;
-                            }
-                            if (ballMidX >= cups[i].hitBounds.left && ballMidX <= cups[i].hitBounds.right &&
-                                    ballMidY <= cups[i].y + cups[i].height && ballMidY >= cups[i].hitBounds.bottom) {
-                                ball.velocity.x *= ball.restitution;
-                                ball.velocity.z *= ball.restitution;
-                            }
-                    }*/
+                    ArrayList<Cup> cups = GV.getInstance().cups();
+                    for (int i = 0; i < cups.size(); i++) {
+                        Cup c = cups.get(i);
+                        if (mid.getX() >= c.bounds().left() && mid.getX() <= c.bounds().right() &&
+                                mid.getY() >= c.bounds().top() && mid.getY() <= c.bounds().bottom()) {
+                            //cups[i].hit = true;
+                            GV.getInstance().removeCup(c);
+                            reset(true, c.id());
+                            break;
+                        }
+                        if (mid.getX() >= c.bounds().left() && mid.getX() <= c.bounds().right() &&
+                                mid.getY() <= c.getPos().getY() + c.getHeight() && mid.getY() >= c.bounds().bottom()) {
+                            vel.mulX(restitution);
+                            vel.mulZ(restitution);
+                        }
+                    }
                 }
                 /*
                 if (!game.inMatch) {
@@ -152,13 +166,10 @@ public class Ball extends Sprite {
                     shotsMade = 0;
                     canShoot = true;
                     wasReset=true;
-                    lastY = 0;
                     clearInterval(loopTimer);
                 }*/
             }
-
-            mid.setX((float)(pos.getZ() + _width / 2));
-            mid.setY((float)(pos.getX() + _height / 2));
+            lastY = 0;
 
             sizeMult = 0.3 * (GV.getInstance().height() - pos.getY());
 
@@ -172,7 +183,9 @@ public class Ball extends Sprite {
 
     public void render(GraphicsContext context) {
         //shadow.render(context);
-        context.drawImage(_image, pos.getZ(), pos.getX(), _width, _height);
+        if (GV.getInstance().isMyTurn()) {
+            context.drawImage(_image, pos.getZ(), pos.getX(), _width, _height);
+        }
     }
 
     /**

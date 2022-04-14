@@ -12,7 +12,6 @@ public abstract class Sprite {
     protected Image _image;
 
     protected Vector3F pos;
-    protected Bounds _bounds;
 
     private int default_width;
     private int default_height;
@@ -49,10 +48,6 @@ public abstract class Sprite {
     private void loadImage(String filename) {
         _image = new Image(CupPongMain.class.getResourceAsStream(filename));
     }
-
-    public Bounds bounds() { return _bounds; }
-
-    public void setBounds(Bounds b) { _bounds = b; }
 
     public void use_defaultsize() {
         _width = default_width;
